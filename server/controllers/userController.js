@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const generateToken = require("../utils/generateToken");
+
 
 const registerUser = async (req, res) => {
   try {
@@ -51,6 +53,63 @@ const registerUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if all fields are filled
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill all fields",
+      });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+
+    // Check if user exists
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Compare password
+const isMatch = await bcrypt.compare(password, user.password);
+
+if (!isMatch) {
+  return res.status(400).json({
+    success: false,
+    message: "Invalid Credentials",
+  });
+}
+const token = generateToken(user._id);
+
+res.status(200).json({
+  success: true,
+  message: "Login Successful",
+  token,
+  user: {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+  },
+});
+  }
+   
+  
+  
+  catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
+  loginUser,
 };
