@@ -59,6 +59,35 @@ const getExpenses = async (req, res) => {
 };
 
 // =========================
+// Get Single Expense
+// =========================
+const getExpenseById = async (req, res) => {
+  try {
+    const expense = await Expense.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!expense) {
+      return res.status(404).json({
+        success: false,
+        message: "Expense not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      expense,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// =========================
 // Update Expense
 // =========================
 const updateExpense = async (req, res) => {
@@ -131,7 +160,6 @@ const deleteExpense = async (req, res) => {
 // =========================
 // Dashboard Summary
 // =========================
-// Dashboard Summary
 const getDashboard = async (req, res) => {
   try {
     const expenses = await Expense.find({
@@ -147,12 +175,11 @@ const getDashboard = async (req, res) => {
 
     const recentExpenses = expenses.slice(0, 5);
 
-    // Category Wise Total
     const categorySummary = await Expense.aggregate([
       {
-      $match: {
-  user: new mongoose.Types.ObjectId(req.user.id),
-},
+        $match: {
+          user: new mongoose.Types.ObjectId(req.user.id),
+        },
       },
       {
         $group: {
@@ -173,7 +200,6 @@ const getDashboard = async (req, res) => {
         categorySummary,
       },
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -185,6 +211,7 @@ const getDashboard = async (req, res) => {
 module.exports = {
   addExpense,
   getExpenses,
+  getExpenseById,
   updateExpense,
   deleteExpense,
   getDashboard,
