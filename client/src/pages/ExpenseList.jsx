@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function ExpenseList() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [expenses, setExpenses] = useState([]);
 
   useEffect(() => {
@@ -15,14 +15,11 @@ function ExpenseList() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        "http://localhost:5000/api/expenses",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/expenses", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setExpenses(response.data.expenses);
     } catch (error) {
@@ -36,19 +33,14 @@ function ExpenseList() {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(
-        `http://localhost:5000/api/expenses/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.delete(`/expenses/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success("Expense Deleted");
-
       fetchExpenses();
-
     } catch (error) {
       toast.error("Delete Failed");
     }
@@ -56,13 +48,11 @@ function ExpenseList() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-10">
-
       <h1 className="text-4xl font-bold mb-8">
         All Expenses
       </h1>
 
       <div className="bg-white rounded-xl shadow">
-
         {expenses.length === 0 ? (
           <p className="p-6 text-center">
             No expenses found.
@@ -84,30 +74,27 @@ function ExpenseList() {
               </div>
 
               <div className="flex items-center gap-6">
-
                 <span className="font-bold text-green-600">
                   ₹ {expense.amount}
                 </span>
 
-            <button
-  onClick={() => navigate(`/expenses?id=${expense._id}`)}
-  className="text-blue-600 hover:underline"
->
-  Edit
-</button>
+                <button
+                  onClick={() => navigate(`/expenses?id=${expense._id}`)}
+                  className="text-blue-600 hover:underline"
+                >
+                  Edit
+                </button>
 
                 <button
                   onClick={() => deleteExpense(expense._id)}
-                  className="text-red-600"
+                  className="text-red-600 hover:underline"
                 >
                   Delete
                 </button>
-
               </div>
             </div>
           ))
         )}
-
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import toast from "react-hot-toast";
 
 function Expenses() {
@@ -25,14 +25,11 @@ function Expenses() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `http://localhost:5000/api/expenses/${expenseId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get(`/expenses/${expenseId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const expense = response.data.expense;
 
@@ -54,9 +51,8 @@ function Expenses() {
       const token = localStorage.getItem("token");
 
       if (expenseId) {
-        // Update Expense
-        await axios.put(
-          `http://localhost:5000/api/expenses/${expenseId}`,
+        await api.put(
+          `/expenses/${expenseId}`,
           {
             title,
             amount: Number(amount),
@@ -72,9 +68,8 @@ function Expenses() {
 
         toast.success("Expense Updated Successfully 🎉");
       } else {
-        // Add Expense
-        await axios.post(
-          "http://localhost:5000/api/expenses/add",
+        await api.post(
+          "/expenses/add",
           {
             title,
             amount: Number(amount),
@@ -94,9 +89,12 @@ function Expenses() {
       navigate("/expense-list");
     } catch (error) {
       console.log(error);
+
       toast.error(
         error.response?.data?.message ||
-          (expenseId ? "Failed to update expense" : "Failed to add expense")
+          (expenseId
+            ? "Failed to update expense"
+            : "Failed to add expense")
       );
     } finally {
       setLoading(false);

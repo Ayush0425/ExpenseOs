@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import Sidebar from "../components/Sidebar";
 import ExpenseChart from "../components/ExpenseChart";
 
@@ -16,14 +16,11 @@ function Dashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        "http://localhost:5000/api/expenses/dashboard",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/expenses/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setDashboard(response.data.dashboard);
     } catch (error) {
@@ -88,9 +85,6 @@ function Dashboard() {
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6">
             Recent Expenses
-            <div className="mt-10">
-  <ExpenseChart data={dashboard.categorySummary} />
-</div>
           </h2>
 
           {dashboard.recentExpenses.length === 0 ? (
@@ -119,6 +113,11 @@ function Dashboard() {
               </div>
             ))
           )}
+        </div>
+
+        {/* Expense Chart */}
+        <div className="mt-10">
+          <ExpenseChart data={dashboard.categorySummary} />
         </div>
       </div>
     </div>
