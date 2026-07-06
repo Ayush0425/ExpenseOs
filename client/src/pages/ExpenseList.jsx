@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 function ExpenseList() {
   const navigate = useNavigate();
+
   const [expenses, setExpenses] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchExpenses();
@@ -46,25 +48,37 @@ function ExpenseList() {
     }
   };
 
+  const filteredExpenses = expenses.filter((expense) =>
+    expense.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-slate-100 p-10">
       <h1 className="text-4xl font-bold mb-8">
         All Expenses
       </h1>
 
+      <input
+        type="text"
+        placeholder="🔍 Search expenses..."
+        className="w-full mb-6 p-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
       <div className="bg-white rounded-xl shadow">
-        {expenses.length === 0 ? (
-          <p className="p-6 text-center">
+        {filteredExpenses.length === 0 ? (
+          <p className="p-6 text-center text-gray-500">
             No expenses found.
           </p>
         ) : (
-          expenses.map((expense) => (
+          filteredExpenses.map((expense) => (
             <div
               key={expense._id}
-              className="flex justify-between items-center border-b p-5"
+              className="flex justify-between items-center border-b p-5 hover:bg-slate-50 transition"
             >
               <div>
-                <h2 className="font-semibold">
+                <h2 className="font-semibold text-lg">
                   {expense.title}
                 </h2>
 
@@ -74,7 +88,7 @@ function ExpenseList() {
               </div>
 
               <div className="flex items-center gap-6">
-                <span className="font-bold text-green-600">
+                <span className="font-bold text-green-600 text-lg">
                   ₹ {expense.amount}
                 </span>
 
