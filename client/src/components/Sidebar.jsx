@@ -11,6 +11,9 @@ function Sidebar() {
 const handleLogout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+
+  toast.success("Logged out successfully 👋");
+
   navigate("/", { replace: true });
 };
 
@@ -50,9 +53,9 @@ const handleLogout = () => {
       </div>
 
       <button
-        onClick={logout}
-        className="mt-auto flex items-center gap-3 bg-red-600 hover:bg-red-700 p-3 rounded-lg"
-      >
+  onClick={handleLogout}
+  className="mt-auto flex items-center gap-3 bg-red-600 hover:bg-red-700 p-3 rounded-lg"
+>
         <MdLogout size={22} />
         Logout
       </button>
