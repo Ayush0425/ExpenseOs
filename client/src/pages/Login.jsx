@@ -1,31 +1,33 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 
 function Login() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
-      const response = await api.post(
-        "/users/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await api.post("/users/login", {
+        email,
+        password,
+      });
 
-      // Save JWT Token
       localStorage.setItem("token", response.data.token);
 
       alert("Login Successful 🎉");
 
-      // Go to Dashboard
-      navigate("/dashboard");
-
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       alert(error.response?.data?.message || "Login Failed");
     }
@@ -34,7 +36,6 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-900">
       <div className="bg-white rounded-xl p-8 w-96 shadow-lg">
-
         <h1 className="text-3xl font-bold text-center mb-6">
           ExpenseOS
         </h1>
@@ -62,6 +63,15 @@ function Login() {
           Login
         </button>
 
+        <p className="text-center mt-5 text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-green-600 font-semibold hover:underline"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

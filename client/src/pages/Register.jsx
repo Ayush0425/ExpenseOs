@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 
 function Register() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,7 +30,9 @@ function Register() {
 
       toast.success("Registration Successful 🎉");
 
-      navigate("/");
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 1000);
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Registration Failed"
