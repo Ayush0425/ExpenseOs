@@ -54,9 +54,18 @@ function ExpenseList() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-10">
-      <h1 className="text-4xl font-bold mb-8">
-        All Expenses
-      </h1>
+     <div className="flex justify-between items-center mb-8">
+  <h1 className="text-4xl font-bold">
+    All Expenses
+  </h1>
+
+  <button
+    onClick={() => navigate("/dashboard")}
+    className="flex items-center gap-2 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+  >
+    ← Dashboard
+  </button>
+</div>
 
       <input
         type="text"
