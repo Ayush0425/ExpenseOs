@@ -8,11 +8,11 @@ function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    toast.success("Logged out successfully 👋");
-    navigate("/");
-  };
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  navigate("/", { replace: true });
+};
 
   const linkClass = (path) =>
     `flex items-center gap-3 p-3 rounded-lg transition ${

@@ -36,6 +36,7 @@ function Dashboard() {
       </div>
     );
   }
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div className="flex">
@@ -46,7 +47,7 @@ function Dashboard() {
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-4xl font-bold text-slate-800">
-              Welcome back, Ayush 👋
+             Welcome back, {user?.name} 👋
             </h1>
 
             <p className="text-gray-500 mt-2">
